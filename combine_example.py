@@ -29,26 +29,33 @@ class ColorPalette():
         self.tufts_brown = LedColor(red=94, green=75, blue=60)
 
 
-class BumperLEDTurn(Node):
-    def __init__(self):
-        #super().__init__('bumper_turn')
+class BatteryPercentageLED(Node):
+    def __init__(self, namespace: str = "/Ygritte"):
         super().__init__('battery_percentage')
-        self.cp = ColorPalette()
 
-        self.lights_publisher = self.create_publisher(
-            LightringLeds, 'Ygritte/cmd_lightring', 10)
-
+        # Create a subscriber to the battery state topic
         self.subscription = self.create_subscription(
-            BatteryState, 'Ygritte/battery_state', self.listener_callback, 
+            BatteryState, namespace + '/battery_state', self.listener_callback, 
             qos_profile_sensor_data)
 
-        self._action_client = ActionClient(self, RotateAngle, 'Ygritte/rotate_angle')
+        # Create a publisher to the LED topic
+        self.lights_publisher = self.create_publisher(
+            LightringLeds, namespace + '/cmd_lightring', 10)
+        
+        self._action_client = ActionClient(self, RotateAngle, '/rotate_angle')
 
-        # Initialize the structure of the message we are publishing to the LEDs
+        # Initialize ColorPallete so we have simple access to RGB values
+        self.cp = ColorPalette()
+
+        # Initialize the structure of the message we are publishing to the LED
+        # topic
         self.lightring = LightringLeds()
         self.lightring.override_system = True
 
-    def listener_callback(self, percentage: float):
+    def listener_callback(self, msg):
+        
+        self.changeLED(msg.percentage)
+        
         print("Battery Percentage:", percentage)
 
         # Initialize to white
@@ -101,7 +108,7 @@ class BumperLEDTurn(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    dance = BumperLEDTurn()
+    dance = BatteryPercentageLED()
     try:
         rclpy.spin(dance)
     except KeyboardInterrupt:
