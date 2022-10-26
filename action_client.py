@@ -40,7 +40,7 @@ class RotateActionClient(Node):
                 
         self._action_client = ActionClient(self, RotateAngle, namespace + '/rotate_angle')
 
-    def send_goal(self, angle=6.28, max_rotation_speed=0.5):
+    def send_goal(self, angle, max_rotation_speed):
 
         goal_msg = RotateAngle.Goal()
         goal_msg.angle = angle 
