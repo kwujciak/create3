@@ -16,7 +16,7 @@ from irobot_create_msgs.action import RotateAngle
 '''
 Input your namespace here as a global variable. 
 '''
-namespace = '[Namespace]'
+namespace = 'JonSnow'
         
 
 class RotateActionClient(Node):
@@ -40,7 +40,7 @@ class RotateActionClient(Node):
                 
         self._action_client = ActionClient(self, RotateAngle, namespace + '/rotate_angle')
 
-    def send_goal(self, angle=1.57, max_rotation_speed=0.5):
+    def send_goal(self, angle=6.28, max_rotation_speed=0.5):
 
         goal_msg = RotateAngle.Goal()
         goal_msg.angle = angle 
@@ -95,10 +95,8 @@ class RotateActionClient(Node):
         print('Shutting down rotate action client node.')
         rclpy.shutdown()
         
-    
-def turn(args=None):
-    angle = 1.57
-    speed = 0.5   
+
+def main(args=None): 
     '''
     Initializes ROS2 and creates an instance of 
     'RotateActionClient'
@@ -111,10 +109,7 @@ def turn(args=None):
 
     action_client.send_goal(angle, speed)
     rclpy.spin(action_client)
-    time.sleep(0.5)   
-
-def main(args=None):
-    turn()
+    time.sleep(0.5)  
 
 
 if __name__ == '__main__':
