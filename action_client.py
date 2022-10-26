@@ -97,6 +97,8 @@ class RotateActionClient(Node):
         
 
 def main(args=None): 
+    angle = 6.28
+    speed = 0.5
     '''
     Initializes ROS2 and creates an instance of 
     'RotateActionClient'
