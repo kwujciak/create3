@@ -61,7 +61,9 @@ class RotateActionClient(Node):
         Returns a future to a goal handle. We need to register a callback 
         for when the future is complete.
         '''        
-        # we register a callback for when the future is complete:
+        # we register a callback for when the future is complete.
+        # a future is complete when the action server accepts or rejects
+        # goal request.
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
@@ -104,9 +106,12 @@ class RotateActionClient(Node):
         Future will complete when the result is ready.
         This step is registering a callback (similar to that of the goal response).
         
-        Goal handle so that we cna request the result.
+        Use the goal handle so that we can request the result.
         '''
         self._get_result_future = goal_handle.get_result_async()
+        
+        # When the result is ready, we'll get a future that will complete. 
+        # So, just like the goal response, we'll register another callback. 
         self._get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
@@ -114,11 +119,13 @@ class RotateActionClient(Node):
         We know the goal was sent, but now we want to know when it is completed.
         Here, we are logging the result sequence.
         '''
+        # Now, we log the result sequence.
         result = future.result().result
         self.get_logger().info('Result: {0}'.format(result))
         '''
         This shuts down the node.
-        '''        
+        '''
+        # Shutdown the node to avoid any issues. 
         print('Shutting down rotate action client node.')
         rclpy.shutdown()
         
