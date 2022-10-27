@@ -71,6 +71,13 @@ class RotateActionClient(Node):
         is something we "call back" to from another function. It's
         kind of like a message handler.
         
+        We want a callback because then we'll know when the goal
+        that was sent (as Maddie showed) is completed.
+        
+        We want a goal handle for the goal we sent. A goal handle
+        is used to monitor the status of the goal so we can get the final result.
+        We'll use this handle to see the result. 
+        
         We run this everytime a new goal is achieved. It
         executes accepted goals.
         
