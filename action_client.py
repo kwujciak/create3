@@ -66,52 +66,53 @@ class RotateActionClient(Node):
         # goal request.
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
-    def goal_response_callback(self, future):
-        #If you look back to this line (65), we register a callback 
-        #for when the future is complete.
-        '''
-        We run this everytime a new goal is achieved. It
-        executes accepted goals.
         
-        A callback that is executed when the future is complete.
-        The future is completed when an action server accepts or rejects the goal request.
-        Since there will be no result, we can check and determine if the goal was rejected
-        and return early. 
-        '''
+    def goal_response_callback(self, future): 
+       '''
+       For those of you who are experienced coders, 
+       you may be familiar with what a callback function is. A callback
+       is something we intuitively "call back" to from another function. 
+       It's kind of like a message handler.
+       
+       The point of a callback function is to execute accepted goals.
+       
+       If you look back to this line (67), we register this callback 
+       for when the future is complete.
+       Just for reference, the future is "complete" when the server 
+       accepts or rejects the goal. The goal in our case is rotating
+       the create 360 degrees. 
+       Thus, this callback is executed when the future is complete.
+       
+       For our specific case, we want a callback because then we'll know 
+       when the goal that was sent (as Maddie showed) is accepted.
+       '''
+      
+       print('Checking if goal was accepted or rejected...')
         
-        '''
-        For those of you who are experienced coders, 
-        you may be familiar with what a callback is. A callback
-        is something we "call back" to from another function. It's
-        kind of like a message handler.
-        
-        We want a callback because then we'll know when the goal
-        that was sent (as Maddie showed) is completed.
-        
-        We want a goal handle for the goal we sent. A goal handle
-        is used to monitor the status of the goal so we can get the final result.
-        We'll use this handle to see the result. 
-        
-        '''
+       '''   
+       This function runs everytime a new goal is achieved.
+       It then executes accepted goals.  
+       
+       Now, we want a goal handle for the goal we sent. A goal handle
+       is used to keep track of the status of the goal so we can get 
+       the final result. We'll use this handle to see the result. 
+       '''
+       goal_handle = future.result()
+       if not goal_handle.accepted:
+           self.get_logger().info('Goal rejected :(')
+           return     
+       self.get_logger().info('Goal accepted :)')
 
-        print('Checking if goal was accepted or rejected...')
-        goal_handle = future.result()
-        if not goal_handle.accepted:
-            self.get_logger().info('Goal rejected :(')
-            return
-
-        self.get_logger().info('Goal accepted :)')
         '''
-        We can request to see if the goal request was accepted or rejected.
-        Future will complete when the result is ready.
-        This step is registering a callback (similar to that of the goal response).
-        
-        Use the goal handle so that we can request the result.
+        Now, we'll use the goal handle so that we can request the result.
+        The result is either accepted or rejected. 
         '''
         self._get_result_future = goal_handle.get_result_async()
         
-        # When the result is ready, we'll get a future that will complete. 
-        # So, just like the goal response, we'll register another callback. 
+        '''
+        When the result is ready, we'll get a future that will complete. 
+        So, just like the goal response, we'll register another callback. 
+        '''
         self._get_result_future.add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
@@ -119,18 +120,25 @@ class RotateActionClient(Node):
         We know the goal was sent, but now we want to know when it is completed.
         Here, we are logging the result sequence.
         '''
-        # Now, we log the result sequence.
         result = future.result().result
         self.get_logger().info('Result: {0}'.format(result))
         '''
-        This shuts down the node.
+        Now, we'll shut down the node to avoid any issues.
         '''
-        # Shutdown the node to avoid any issues. 
         print('Shutting down rotate action client node.')
         rclpy.shutdown()
+        '''
+        That concludes our use with callback functions, and
+        we're almost done with our action client script.
+        '''
         
 
 def main(args=None): 
+    '''
+    We'll set our desired angle of rotation
+    and our rotational speed, not to be confused
+    with max angle and speed defined in the send_goal function. 
+    '''
     angle = 6.28
     speed = 0.5
     '''
@@ -147,6 +155,9 @@ def main(args=None):
     rclpy.spin(action_client)
     time.sleep(0.5)  
 
-
+'''
+We'll close this script how we always do,
+by running this main function. 
+'''
 if __name__ == '__main__':
     main()
