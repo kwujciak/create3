@@ -65,6 +65,18 @@ class RotateActionClient(Node):
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
+        #If you look back to this line (65), we register a callback 
+        #for when the future is complete.
+        '''
+        We run this everytime a new goal is achieved. It
+        executes accepted goals.
+        
+        A callback that is executed when the future is complete.
+        The future is completed when an action server accepts or rejects the goal request.
+        Since there will be no result, we can check and determine if the goal was rejected
+        and return early. 
+        '''
+        
         '''
         For those of you who are experienced coders, 
         you may be familiar with what a callback is. A callback
@@ -78,14 +90,8 @@ class RotateActionClient(Node):
         is used to monitor the status of the goal so we can get the final result.
         We'll use this handle to see the result. 
         
-        We run this everytime a new goal is achieved. It
-        executes accepted goals.
-        
-        A callback that is executed when the future is complete.
-        The future is completed when an action server accepts or rejects the goal request.
-        Since there will be no result, we can check and determine if the goal was rejected
-        and return early. 
         '''
+
         print('Checking if goal was accepted or rejected...')
         goal_handle = future.result()
         if not goal_handle.accepted:
