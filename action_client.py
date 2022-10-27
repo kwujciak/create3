@@ -54,11 +54,14 @@ class RotateActionClient(Node):
         Sends a goal to the server.
         '''   
         print('Action server available. Sending rotate goal to server.')
+        
+        # _action_client.send_goal_async(goal_msg) method returns a future to a goal handle
         self._send_goal_future = self._action_client.send_goal_async(goal_msg)
         '''
         Returns a future to a goal handle. We need to register a callback 
         for when the future is complete.
         '''        
+        # we register a callback for when the future is complete:
         self._send_goal_future.add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
@@ -87,6 +90,8 @@ class RotateActionClient(Node):
         We can request to see if the goal request was accepted or rejected.
         Future will complete when the result is ready.
         This step is registering a callback (similar to that of the goal response).
+        
+        Goal handle so that we cna request the result.
         '''
         self._get_result_future = goal_handle.get_result_async()
         self._get_result_future.add_done_callback(self.get_result_callback)
