@@ -68,6 +68,9 @@ class RotateActionClient(Node):
         is something we "call back" to from another function. It's
         kind of like a message handler.
         
+        We run this everytime a new goal is achieved. It
+        executes accepted goals.
+        
         A callback that is executed when the future is complete.
         The future is completed when an action server accepts or rejects the goal request.
         Since there will be no result, we can check and determine if the goal was rejected
@@ -90,6 +93,7 @@ class RotateActionClient(Node):
 
     def get_result_callback(self, future):
         '''
+        We know the goal was sent, but now we want to know when it is completed.
         Here, we are logging the result sequence.
         '''
         result = future.result().result
