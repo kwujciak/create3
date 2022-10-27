@@ -63,6 +63,11 @@ class RotateActionClient(Node):
 
     def goal_response_callback(self, future):
         '''
+        For those of you who are experienced coders, 
+        you may be familiar with what a callback is. A callback
+        is something we "call back" to from another function. It's
+        kind of like a message handler.
+        
         A callback that is executed when the future is complete.
         The future is completed when an action server accepts or rejects the goal request.
         Since there will be no result, we can check and determine if the goal was rejected
