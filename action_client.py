@@ -88,7 +88,7 @@ class RotateActionClient(Node):
        
        The point of a callback function is to execute accepted goals.
        
-       If you look back to this line (67), we register this callback 
+       If you look back to this line (79), we register this callback 
        for when the future is complete.
        Just for reference, the future is "complete" when the server 
        accepts or rejects the goal. The goal in our case is rotating
