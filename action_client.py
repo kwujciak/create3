@@ -2,15 +2,24 @@
 '''
 These statements allow the Node class to be used and actions to be performed. 
 '''
+
+#if we go to terminal we can first see a list of potential actions for the robot by doing ros2 action list -t
+#this tells us all the possible actions and the action types
+#lets start today like we always do, making a python file we'll name it actionclient_rotate.py 
+#because this script will make the create3 rotate
+#then we'll start commenting the title of the file so we remember what it is
+
+#lets do our usual import statements of rclpy, rclpy.node and then today we also need to import
+#the action client 
+
 import rclpy
-from rclpy.action import ActionClient
 from rclpy.node import Node
-import time
+from rclpy.action import ActionClient
 
 '''
-These statements import messages and actions.
+Then we'll import our action message rotate angle, agian if we go to irobot create 3 messages github we can 
+get information on the action types, their messages and what information they require
 '''
-from irobot_create_msgs.action import DriveDistance
 from irobot_create_msgs.action import RotateAngle
 
 '''
@@ -19,48 +28,51 @@ Input your namespace here as a global variable.
 namespace = 'JonSnow'
         
 
+# we'll start a new class for our action client. action clients work in conjunction with action servers. the action client will 
+#send a goal request to the server, which will preform the action and then send back feedback and results to the client.
+# this action client will tell the robot to turn at a given angle and speed. 
+
 class RotateActionClient(Node):
-    '''
-    This is an action client. Action clients send goal requests to action servers,
-    which sends goal feedback and results back to action clients. This action client
-    tells the robot to turn 90 degrees at a speed of 0.15. Subclass of Node.
-    '''
 
     def __init__(self):
         '''
         We initialize the class by calling the Node constructor then
         naming our node 'rotate_action_client'
         '''
-        print('Initializing a new action server in order to rotate.')
         super().__init__('rotate_action_client')
         '''
-        Here we initiate a new action server. We include where to add the action client
-        (self), the type of action (RotateAngle), and the action name ('rotate_angle').
+        Here we initiate a new action client. We include where to add the action client
+        (self), the type of action (RotateAngle), and the action name ('rotate_angle') with our namespace.
         '''
                 
         self._action_client = ActionClient(self, RotateAngle, namespace + '/rotate_angle')
 
+        #then lets define a new function to send the goal to the action server
+        #we'll make angle and max rotation speed arguments for the function
     def send_goal(self, angle, max_rotation_speed):
 
+        #then lets define our goal message to be that of the of the rotate angle action type
+        #this will allow us to use the dot operator on the goal message to define components of the message
         goal_msg = RotateAngle.Goal()
+        
+        #we'll use the dot operator to set the angle equal to the argument that comes into the function
+        #and the same for the max rotation speed
+        
+        #we know that the goal message for the rotate action 
         goal_msg.angle = angle 
         goal_msg.max_rotation_speed = max_rotation_speed
+        
         '''
-        This method waits for the action server to be available.
+        This method waits for the action server to be available. 
         '''
         print('Waiting for action server to be available...')
         self._action_client.wait_for_server()
-        '''
-        Sends a goal to the server.
-        '''   
-        print('Action server available. Sending rotate goal to server.')
         
-        # _action_client.send_goal_async(goal_msg) method returns a future to a goal handle
+        
+        # we'll send the goal message asynchronously
         self._send_goal_future = self._action_client.send_goal_async(goal_msg)
-        '''
-        Returns a future to a goal handle. We need to register a callback 
-        for when the future is complete.
-        '''        
+        
+        
         # we register a callback for when the future is complete.
         # a future is complete when the action server accepts or rejects
         # goal request.
