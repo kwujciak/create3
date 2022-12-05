@@ -3,7 +3,8 @@ class Bump_Sound(Node):
     This class contains a publisher, a subscriber and an action client. 
     It will take in data from a the hazard detection topic - the bumpers, 
     publish to the audio note sequence topic, and send a goal to play
-    an audio note. This class "Bump_Sound" which is a subclass of Node. 
+    an audio note. As we've explained previously, 
+    this class "Bump_Sound" is a subclass of Node. 
     '''
               
     def __init__(self):
@@ -15,7 +16,7 @@ class Bump_Sound(Node):
     	'''
     	Then we initialize the subscriber, publisher and action client
     	'''
-    	print('Hazard detection (subscriber), audio note (publisherr), and audio note sequence (action) are all initialized.')
+    	print('Hazard detection (subscriber), audio note (publisher), and audio note sequence (action) are all initialized.')
     	self.subscription = self.create_subscription(HazardDetectionVector, namespace + '/hazard_detection',self.listener_callback, qos_profile_sensor_data)
     	self.publisher = self.create_publisher(AudioNoteVector, namespace + '/cmd_audio',10)
     	self._action_client = ActionClient(self, AudioNoteSequence, namespace + '/audio_note_sequence')
@@ -28,7 +29,7 @@ class Bump_Sound(Node):
     	
     def listener_callback(self, msg):  
         '''
-	As mentioned above, we registered a the listener_callback
+	As mentioned above, we registered the listener_callback
 	function here (show). Thus, whenever your computer
 	recieves a message from the hazard detection sensors (the bumpers) 
 	this function will be called. In this function, as you're about
