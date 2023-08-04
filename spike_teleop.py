@@ -121,7 +121,8 @@ def connect_socket():
     
     spike_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     spike_socket.connect((CREATE_IP, CREATE_PORT))
-
+    print('Socket created and connected to ' + CREATE_IP)
+    
     # enters Spike REPL
     command = '\x03' 
     spike_socket.send(command.encode())
