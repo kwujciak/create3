@@ -1,18 +1,19 @@
+# Import statements
 import sys
-
 import geometry_msgs.msg
 import rclpy
-
 import socket
 import time
 
+# Import correct library based on computer operating system
 if sys.platform == 'win32':
     import msvcrt
 else:
     import termios
     import tty
 
-CREATE_IP = '192.168.0.101'
+# Initialize Create variable info
+CREATE_IP = '<Create IP>'
 CREATE_PORT = 8883
 
 
@@ -73,11 +74,12 @@ speedBindings = {
     'c': (1, .9),
 }
 
+# Array for new Spike bindings
 spikeBindings = {
     'a': None
 }
 
-
+# Read key from keyboard terminal input 
 def getKey(settings):
     if sys.platform == 'win32':
         # getwch() returns a string on Windows
@@ -105,21 +107,22 @@ def restoreTerminalSettings(old_settings):
 def vels(speed, turn):
     return 'currently:\tspeed %s\tturn %s ' % (speed, turn)
    
-    
+# Commands that are sent from Create to the Spike over serial    
 def spikeThrow(spike_socket):
-
+    # list of commands it will send
     list = ['import hub', 'from hub import port', 'import motor', 'motor.run_for_degrees(port.A, 150, 2000)']
     
     for item in list:
         spike_socket.send((item + '\r\n').encode())
-    time.sleep(1)
-    spike_socket.send(('motor.run_for_degrees(port.A, -120, 1000)' + '\r\n').encode())
-        
-def connect_socket():
 
+
+# Creates socket for computer to connnect to Create over TCP
+def connect_socket():
+    
     spike_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     spike_socket.connect((CREATE_IP, CREATE_PORT))
-    
+
+    # enters Spike REPL
     command = '\x03' 
     spike_socket.send(command.encode())
     
