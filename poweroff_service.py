@@ -2,8 +2,6 @@ import rclpy
 from rclpy.node import Node
 from irobot_create_msgs.srv import RobotPower
 
-# namespace = '/Moondancer'
-
 class RobotPowerService(Node):
     def __init__(self):
         super().__init__('robot_power_service')
