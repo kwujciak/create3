@@ -13,17 +13,21 @@ robot = Root(Bluetooth())
 @event(robot.when_play)
 async def play(robot):
     while True:
+        RGB = []
         # get raw values under all lighting conditions
         for c in Root.ColorLighting:
-            RGB = []
             print(c, await robot.get_color_values(c, Root.ColorFormat.ADC_COUNTS))
             #print(type(await robot.get_color_values(c, Root.ColorFormat.ADC_COUNTS)))
-            mean = sum(await robot.get_color_values(c, Root.ColorFormat.ADC_COUNTS))
-            print('avg is ' + str(mean/32))
+            summation = sum(await robot.get_color_values(c, Root.ColorFormat.ADC_COUNTS))
+            #print('avg is ' + str(summation/32))
+            mean = summation/32
+            RGB.append(mean)
+            #RGB = RGB + [mean]
+            print(RGB)
+            #print(RBG)
 
         # get robot's parsed colors
         print("IDs", await robot.get_color_ids())
         await robot.wait(1)
 
-robot.play()
 robot.play()
