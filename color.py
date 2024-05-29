@@ -10,7 +10,7 @@ ColorID = Root.ColorID
 
 robot = Root(Bluetooth())
 
-def get_color_name(red, green, blue):
+def get_color_name(r, g, b):
     if r > 200 and g > 200 and b > 200:
         return 'White'
     elif r > 200 and g < 50 and b < 50:
@@ -54,8 +54,9 @@ async def play(robot):
         red = RGB[1]
         green = RGB[2]
         blue = RGB[3]
+
         color_name = get_color_name(red, green, blue)
-        print(color_name)
+        print(f'Color: {color_name}')
         RGB = []
 
 robot.play()
